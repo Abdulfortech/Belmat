@@ -2,6 +2,8 @@
 
 
 use App\Http\Controllers\API\v1\AuthController;
+use App\Http\Controllers\API\v1\PartiesController;
+use App\Http\Controllers\API\v1\PollingUnitsController;
 use App\Http\Controllers\API\v1\StatesController;
 use App\Http\Controllers\API\v1\UserController;
 use Illuminate\Http\Request;
@@ -37,6 +39,45 @@ Route::group(['prefix' => 'v1'], function ()
     Route::group(['prefix' => 'states-lgas'], function () 
     {
         Route::get('/states', [StatesController::class, 'index']);
+        Route::get('/states/{id}', [StatesController::class, 'state']);
+        Route::get('/states/lgas/{id}', [StatesController::class, 'stateLgas']);
+        Route::get('/states/lgas/search/{title}', [StatesController::class, 'stateLgasByTitle']);
         Route::get('/lgas', [StatesController::class, 'lgas']);
+        Route::get('/lga/{id}', [StatesController::class, 'lga']);
+        Route::get('/lgas/by-title/{title}', [StatesController::class, 'lgaByTitle']);
+    });
+
+    Route::group(['prefix' => 'parties'], function () 
+    {
+        Route::get('/', [PartiesController::class, 'index']);
+        Route::get('/{id}', [PartiesController::class, 'view']);
+        Route::post('/add', [PartiesController::class, 'add']);
+        Route::put('/edit/{id}', [PartiesController::class, 'edit']);
+        Route::get('/activate/{id}', [PartiesController::class, 'activate']);
+        Route::get('/deactivate/{id}', [PartiesController::class, 'deactivate']);
+        Route::delete('/delete/{id}', [StatesController::class, 'delete']);
+    });
+
+    Route::group(['prefix' => 'wards'], function () 
+    {
+        Route::get('/', [PollingUnitsController::class, 'index']);
+        Route::get('/{id}', [PollingUnitsController::class, 'view']);
+        Route::post('/add', [PollingUnitsController::class, 'add']);
+        Route::put('/edit/{id}', [PollingUnitsController::class, 'edit']);
+        Route::get('/activate/{id}', [PollingUnitsController::class, 'activate']);
+        Route::get('/deactivate/{id}', [PollingUnitsController::class, 'deactivate']);
+        Route::delete('/delete/{id}', [StatesController::class, 'delete']);
+    });
+
+    
+    Route::group(['prefix' => 'polling-units'], function () 
+    {
+        Route::get('/', [PollingUnitsController::class, 'index']);
+        Route::get('/{id}', [PollingUnitsController::class, 'view']);
+        Route::post('/add', [PollingUnitsController::class, 'add']);
+        Route::put('/edit/{id}', [PollingUnitsController::class, 'edit']);
+        Route::get('/activate/{id}', [PollingUnitsController::class, 'activate']);
+        Route::get('/deactivate/{id}', [PollingUnitsController::class, 'deactivate']);
+        Route::delete('/delete/{id}', [StatesController::class, 'delete']);
     });
 });
