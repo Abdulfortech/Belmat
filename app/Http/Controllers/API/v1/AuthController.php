@@ -32,44 +32,37 @@ class AuthController extends Controller
     //
     public function signin(Request $request)
     {
-        $request->validate([
-            'username' => 'required|string',
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string',
             'password' => 'required|string',
         ]);
+
+        if ($validator->fails()) {
+            return respondWithTransformer(['errors' => $validator->errors()], false, 400, [], 'Validation error(s)');
+        }
     
-        if (Auth::attempt($request->only('username', 'password'))) {
+    
+        if (Auth::attempt($request->only('email', 'password'))) {
             $user = Auth::user();
-    
-            // Log user activity
-            UserLogs::create([
-                'userID' => $user->id,
-                'username' => $user->username,
-                'IPAddress' => $request->ip(),
-                'status' => 'Signed-In',
-            ]);
-    
+
+            // Check if user is not active
+            if ($user->status !== 'Active') {
+                Auth::logout(); 
+
+                return respondWithTransformer([], false, 403, [], "Your account is not active. Please contact support.");
+            }
+
             // Generate token via Sanctum
             $token = $user->createToken('auth_token')->plainTextToken;
-    
-            // data
-            
+
+            // Prepare response data
             $data = $this->userResponse($user);
             $data['token'] = $token;
 
             return respondWithTransformer($data, true, 200, [], "Sign In successfully");
-            
         }
-    
-        // Log failed attempt
-        UserLogs::create([
-            'username' => $request->username,
-            'IPAddress' => $request->ip(),
-            'status' => 'Failed',
-        ]);
-    
-        return response()->json([
-            'message' => 'Invalid credentials'
-        ], 401);
+
+        return respondWithTransformer([], false, 403, [], "Invalid Credential");
     }
 
     public function signup(Request $request)
@@ -78,11 +71,16 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'firstName' => ['required', 'min:4'],
             'lastName' => ['required', 'min:4'],
-            'username' => 'required|unique:users|max:15',
+            'dob' => 'nullable|max:15',
+            'gender' => 'nullable|max:15',
             'phone' => 'required|unique:users|min:11|max:15',
+            'state' => 'nullable|max:15',
+            'lga' => 'nullable|max:15',
+            'address' => 'nullable|max:15',
+            'role' => 'required|in:Admin,Agent,Supporter|max:15',
+            'polling_unit' => 'nullable|max:15',
             'email' => 'required|email|unique:users',
             'password' => 'required|confirmed|min:8',
-            'referralId' => 'nullable|string'
         ]);
 
         if ($validator->fails()) {
@@ -92,39 +90,19 @@ class AuthController extends Controller
         $user = User::create([
             'firstName' => $request->firstName,
             'lastName' => $request->lastName,
-            'username' => $request->username,
+            'dob' => $request->dob,
+            'gender' => $request->gender,
+            'state' => $request->state,
+            'lga' => $request->lga,
+            'address' => $request->address,
             'phone' => $request->phone,
             'email' => $request->email,
-            'isVerified' => null,
-            'role' => UserRole::AGENT,
+            'role' => $request->role,
             'status' => 'Active',
             'password' => Hash::make($request->password),
         ]);
     
-        // Create wallet
-        $walletIdentifier = generateWalletIdentifier(); // make sure this helper exists
-        Wallet::create([
-            'userID' => $user->id,
-            'identifier' => $walletIdentifier,
-            'mainBalance' => 0,
-            'referralBalance' => 0,
-            'status' => 'Active',
-        ]);
-    
-        // Referral logic
-        if ($request->referralId) {
-            $referrer = User::where('username', $request->referralId)->first();
-            if ($referrer) {
-                $referral = Referrals::create([
-                    'userID' => $user->id,
-                    'referrer' => $referrer->id,
-                    'commission' => 20,
-                    'status' => TransactionStatus::PENDING,
-                ]);
-                $user->update(['referralID' => $referral->id]);
-            }
-        }
-    
+        
         $data = $this->userResponse($user);
             
         return respondWithTransformer($data, true, 201, [], "Account created successfully");

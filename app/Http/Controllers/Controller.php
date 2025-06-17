@@ -11,20 +11,32 @@ abstract class Controller
             "id" => $user->id,
             "firstName" => $user->firstName,
             "lastName" => $user->lastName,
-            "username" => $user->username,
             "dob" => $user->dob,
             "gender" => $user->gender,
             "email" => $user->email,
             "phone" => $user->phone,
             "state" => $user->state,
+            "lga" => $user->lga,
             "address" => $user->address,
             "role" => $user->role,
-            "isVerified" => $user->isVerified,
-            "isPinSet" => is_null($user->pin) ? False : True,
-            "address" => $user->address,
+            "status" => $user->status,
         ];
         return $data;
     }
 
+    public function lgasResponse($payload)
+    {
+        $data = $payload->map(function ($lga) {
+            return [
+                "id" => $lga->id,
+                "title" => $lga->title,
+                "state" => $lga->state->title ?? null,
+                "state_id" => $lga->state_id,
+                "status" => $lga->status,
+            ];
+        });
+
+        return $data;
+    }
 
 }

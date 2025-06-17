@@ -6,11 +6,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasApiTokens; 
 
     /**
      * The attributes that are mass assignable.
@@ -31,6 +32,9 @@ class User extends Authenticatable
         'role',
         'picture',
         'email_verified_at',
+        'polling_unit_id',
+        'token',
+        'generated_at',
         'status',
     ];
 
@@ -56,4 +60,16 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    
+    public function scopeWithEmail($query, $email)
+    {
+        return $query->where('email', $email);
+    }
+    
+    public function scopeWithPhone($query, $phone)
+    {
+        return $query->where('phone', $phone);
+    }
+
 }

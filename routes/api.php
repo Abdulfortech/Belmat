@@ -2,6 +2,7 @@
 
 
 use App\Http\Controllers\API\v1\AuthController;
+use App\Http\Controllers\API\v1\StatesController;
 use App\Http\Controllers\API\v1\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -31,5 +32,11 @@ Route::group(['prefix' => 'v1'], function ()
         Route::post('/pin/update', [UserController::class, 'updatePin']);
         Route::get('/banks', [UserController::class, 'getBanks']);
         Route::post('/verify/bvn', [UserController::class, 'verifyBVN']);
+    });
+
+    Route::group(['prefix' => 'states-lgas'], function () 
+    {
+        Route::get('/states', [StatesController::class, 'index']);
+        Route::get('/lgas', [StatesController::class, 'lgas']);
     });
 });
