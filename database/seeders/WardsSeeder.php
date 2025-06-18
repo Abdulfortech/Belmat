@@ -17,23 +17,25 @@ class WardsSeeder extends Seeder
     {
         // Get the state and LGA IDs
         $state = State::where('title', 'Zamfara')->first();
-        $lga = LocalGovernment::where('title', 'Bakura')->where('state_id', $state->id)->first();
+        $lga = LocalGovernment::where('title', 'Zurmi')->where('state_id', $state->id)->first();
 
         if (!$state || !$lga) {
-            $this->command->error('Zamfara state or Bakura LGA not found.');
+            $this->command->error('Zamfara state or Zurmi LGA not found.');
             return;
         }
 
         $wards = [
-            "BIRNIN TUDU",
-            "DAMRI",
-            "DANKADU",
-            "DAN MANAU",
-            "YAR KUFOJI",
-            "DAKKO",
-            "NASARAWA",
-            "RINI",
-            "YAR GEDA",
+            "BOKO",
+            "DAURAN / BIRNIN-TSABA",
+            "DOLE",
+            "GALADIMA/YANRUWA",
+            "KANWA",
+            "KWASHBAWA",
+            "MASHEM",
+            "KUTURU/MAYASA",
+            "RUKUDAWA",
+            "YAN BUKI/ DUTSI",
+            "ZURMI"
         ];
 
         foreach ($wards as $ward) {
@@ -45,7 +47,7 @@ class WardsSeeder extends Seeder
             ]);
         }
 
-        $this->command->info('Wards for bakura LGA created successfully.');
+        $this->command->info('Wards for Zurmi LGA created successfully.');
 
     }
 }

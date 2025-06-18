@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Enum\GeneralStatus;
 use App\Http\Controllers\Controller;
+use App\Models\LocalGovernment;
+use App\Models\State;
 use App\Models\Ward;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -12,18 +15,54 @@ class WardsController extends Controller
     
     public function index()
     {
-        $parties = Ward::all();
-        return respondWithTransformer($parties, true, 200, [], "All parties fetched successfully");
+        $wards = Ward::all();
+        return respondWithTransformer($wards, true, 200, [], "All wards fetched successfully");
+    }
+
+    public function byState(Request $request, $id)
+    {
+        $state = State::findOrFail($id);
+
+        if (!$state) {
+            return respondWithTransformer([], true, 404, [], "State Not Found");
+        }
+
+        $wards = Ward::where('state_id', $id)->get();
+
+        if ($wards->isEmpty()) {
+            return respondWithTransformer([], true, 404, [], "wards Not Found");
+        }
+        
+        // $data = $this->lgasResponse($wards);
+        return respondWithTransformer($wards, true, 200, [], "Fetched state's wards successfuly");
+    }
+
+    public function byLga(Request $request, $id)
+    {
+        $lga = LocalGovernment::findOrFail($id);
+
+        if (!$lga) {
+            return respondWithTransformer([], true, 404, [], "Local Government Not Found");
+        }
+
+        $wards = Ward::where('local_government_id', $id)->get();
+
+        if ($wards->isEmpty()) {
+            return respondWithTransformer([], true, 404, [], "wards Not Found");
+        }
+        
+        // $data = $this->lgasResponse($wards);
+        return respondWithTransformer($wards, true, 200, [], "Fetched lga's wards successfuly");
     }
 
     public function view($id)
     {
-        $party = Ward::find($id);
-        if (!$party) {
-            return respondWithTransformer([], false, 404, [], "Party not found");
+        $ward = Ward::find($id);
+        if (!$ward) {
+            return respondWithTransformer([], false, 404, [], "ward not found");
         }
 
-        return respondWithTransformer($party, true, 200, [], "Party details fetched successfully");
+        return respondWithTransformer($ward, true, 200, [], "Ward details fetched successfully");
     }
 
     public function add(Request $request)
@@ -40,9 +79,9 @@ class WardsController extends Controller
         }
 
         $validator['status'] = GeneralStatus::ACTIVE; 
-        $party = Ward::create($validator);
+        $ward = Ward::create($validator);
 
-        return respondWithTransformer($party, true, 201, [], "Party created successfully");
+        return respondWithTransformer($ward, true, 201, [], "ward created successfully");
     }
 
     public function edit(Request $request, $id)
@@ -58,51 +97,52 @@ class WardsController extends Controller
             return respondWithTransformer(['errors' => $validator->errors()], false, 400, [], 'Validation error(s)');
         }
 
-        $party = Ward::find($id);
-        if (!$party) {
-            return respondWithTransformer([], false, 404, [], "Party not found");
+        $ward = Ward::find($id);
+        if (!$ward) {
+            return respondWithTransformer([], false, 404, [], "ward not found");
         }
 
-        $party->update($validator);
+        $ward->update($validator);
 
-        return respondWithTransformer($party, true, 200, [], "Party updated successfully");
+        return respondWithTransformer($ward, true, 200, [], "ward updated successfully");
     }
 
     public function activate($id)
     {
-        $party = Ward::find($id);
-        if (!$party) {
-            return respondWithTransformer([], false, 404, [], "Party not found");
+        $ward = Ward::find($id);
+        if (!$ward) {
+            return respondWithTransformer([], false, 404, [], "ward not found");
         }
 
-        $party->status = 'active';
-        $party->save();
+        $ward->status = 'active';
+        $ward->save();
 
-        return respondWithTransformer($party, true, 200, [], "Party activated successfully");
+        return respondWithTransformer($ward, true, 200, [], "ward activated successfully");
     }
 
     public function deactivate($id)
     {
-        $party = Ward::find($id);
-        if (!$party) {
-            return respondWithTransformer([], false, 404, [], "Party not found");
+        $ward = Ward::find($id);
+        if (!$ward) {
+            return respondWithTransformer([], false, 404, [], "ward not found");
         }
 
-        $party->status = 'Inactive';
-        $party->save();
+        $ward->status = 'Inactive';
+        $ward->save();
 
-        return respondWithTransformer($party, true, 200, [], "Party deactivated successfully");
+        return respondWithTransformer($ward, true, 200, [], "Ward deactivated successfully");
     }
 
     public function delete($id)
     {
-        $party = Ward::find($id);
-        if (!$party) {
-            return respondWithTransformer(null, false, 404, [], "Party not found");
+        $ward = Ward::find($id);
+        if (!$ward) {
+            return respondWithTransformer(null, false, 404, [], "ward not found");
         }
 
-        $party->delete();
+        $ward->delete();
 
-        return respondWithTransformer(null, true, 200, [], "Party deleted successfully");
+        return respondWithTransformer(null, true, 200, [], "ward deleted successfully");
     }
+    
 }

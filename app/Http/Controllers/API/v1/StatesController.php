@@ -41,7 +41,7 @@ class StatesController extends Controller
         if ($lgas->isEmpty()) {
             return respondWithTransformer([], true, 404, [], "LGA Not Found");
         }
-        
+
         $data = $this->lgasResponse($lgas);
         return respondWithTransformer($data, true, 200, [], "Fetched lga successfuly");
     }
@@ -58,7 +58,6 @@ class StatesController extends Controller
         $data = $this->lgasResponse($lgas);
         return respondWithTransformer($data, true, 200, [], "Fetched lga successfuly");
     }
-
 
     public function lgas(Request $request)
     {
@@ -88,4 +87,5 @@ class StatesController extends Controller
         
         return respondWithTransformer($lga, true, 200, [], "Fetched LGA successfuly");
     }
+
 }

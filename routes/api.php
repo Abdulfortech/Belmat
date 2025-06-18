@@ -2,10 +2,13 @@
 
 
 use App\Http\Controllers\API\v1\AuthController;
+use App\Http\Controllers\API\v1\ElectionController;
 use App\Http\Controllers\API\v1\PartiesController;
 use App\Http\Controllers\API\v1\PollingUnitsController;
 use App\Http\Controllers\API\v1\StatesController;
 use App\Http\Controllers\API\v1\UserController;
+use App\Http\Controllers\API\v1\WardsController;
+use App\Http\Controllers\API\v1\ZonesController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -55,18 +58,20 @@ Route::group(['prefix' => 'v1'], function ()
         Route::put('/edit/{id}', [PartiesController::class, 'edit']);
         Route::get('/activate/{id}', [PartiesController::class, 'activate']);
         Route::get('/deactivate/{id}', [PartiesController::class, 'deactivate']);
-        Route::delete('/delete/{id}', [StatesController::class, 'delete']);
+        Route::delete('/delete/{id}', [PartiesController::class, 'delete']);
     });
 
     Route::group(['prefix' => 'wards'], function () 
     {
-        Route::get('/', [PollingUnitsController::class, 'index']);
-        Route::get('/{id}', [PollingUnitsController::class, 'view']);
-        Route::post('/add', [PollingUnitsController::class, 'add']);
-        Route::put('/edit/{id}', [PollingUnitsController::class, 'edit']);
-        Route::get('/activate/{id}', [PollingUnitsController::class, 'activate']);
-        Route::get('/deactivate/{id}', [PollingUnitsController::class, 'deactivate']);
-        Route::delete('/delete/{id}', [StatesController::class, 'delete']);
+        Route::get('/', [WardsController::class, 'index']);
+        Route::get('/{id}', [WardsController::class, 'view']);
+        Route::get('/lga/{lga}', [WardsController::class, 'byLga']);
+        Route::get('/state/{state}', [WardsController::class, 'byState']);
+        Route::post('/add', [WardsController::class, 'add']);
+        Route::put('/edit/{id}', [WardsController::class, 'edit']);
+        Route::get('/activate/{id}', [WardsController::class, 'activate']);
+        Route::get('/deactivate/{id}', [WardsController::class, 'deactivate']);
+        Route::delete('/delete/{id}', [WardsController::class, 'delete']);
     });
 
     
@@ -79,5 +84,31 @@ Route::group(['prefix' => 'v1'], function ()
         Route::get('/activate/{id}', [PollingUnitsController::class, 'activate']);
         Route::get('/deactivate/{id}', [PollingUnitsController::class, 'deactivate']);
         Route::delete('/delete/{id}', [StatesController::class, 'delete']);
+    });
+
+    Route::group(['prefix' => 'elections'], function () 
+    {
+        Route::get('/', [ElectionController::class, 'index']);
+        Route::get('/{id}', [ElectionController::class, 'view']);
+        Route::post('/add', [ElectionController::class, 'add']);
+        Route::put('/edit/{id}', [ElectionController::class, 'edit']);
+        Route::get('/activate/{id}', [ElectionController::class, 'activate']);
+        Route::get('/deactivate/{id}', [ElectionController::class, 'deactivate']);
+        Route::delete('/delete/{id}', [ElectionController::class, 'delete']);
+    });
+
+    Route::group(['prefix' => 'election-types'], function () 
+    {
+        Route::get('/', [ElectionController::class, 'electionTypes']);
+    });
+
+    Route::group(['prefix' => 'senatorial-zones'], function () 
+    {
+        Route::get('/', [ZonesController::class, 'senatorialZones']);
+    });
+
+    Route::group(['prefix' => 'political-zones'], function () 
+    {
+        Route::get('/', [ZonesController::class, 'politicalZones']);
     });
 });
