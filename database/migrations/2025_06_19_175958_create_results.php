@@ -13,6 +13,20 @@ return new class extends Migration
     {
         Schema::create('results', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
+            $table->string('agent_name')->nullable();
+            $table->string('agent_phone')->nullable();
+            $table->string('media')->nullable();
+            $table->string('status')->nullable();
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('no action');
+            $table->foreignId('election_id')->nullable()->constrained()->onDelete('no action');
+            $table->string('election_type')->nullable();
+            $table->foreignId('political_party_id')->nullable()->constrained()->onDelete('no action');
+            $table->foreignId('state_id')->nullable()->constrained()->onDelete('no action');
+            $table->foreignId('local_government_id')->nullable()->constrained()->onDelete('no action');
+            $table->foreignId('ward_id')->nullable()->constrained()->onDelete('no action');
+            $table->foreignId('polling_unit_id')->nullable()->constrained()->onDelete('no action');
+            $table->string('constituency_id')->nullable();
             $table->timestamps();
         });
     }
