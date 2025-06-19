@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\PollingUnit;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -19,5 +20,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ElectionTypesSeeder::class);
         $this->call(SenatorialZonesSeeder::class);
         $this->call(PoliticalZonesSeeder::class);
+        $this->call(PollingUnitsSeeder::class);
     }
 }

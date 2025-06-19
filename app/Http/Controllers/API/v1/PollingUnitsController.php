@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\Controller;
+use App\Models\LocalGovernment;
 use App\Models\PollingUnit;
+use App\Models\State;
+use App\Models\Ward;
 use Illuminate\Http\Request;
 
 class PollingUnitsController extends Controller
@@ -23,6 +26,60 @@ class PollingUnitsController extends Controller
         }
 
         return respondWithTransformer($party, true, 200, [], "Party details fetched successfully");
+    }
+
+    public function byState(Request $request, $id)
+    {
+        $state = State::findOrFail($id);
+
+        if (!$state) {
+            return respondWithTransformer([], true, 404, [], "State Not Found");
+        }
+
+        $units = PollingUnit::where('state_id', $id)->get();
+
+        if ($units->isEmpty()) {
+            return respondWithTransformer([], true, 404, [], "units Not Found");
+        }
+        
+        // $data = $this->lgasResponse($units);
+        return respondWithTransformer($units, true, 200, [], "Fetched state's polling units successfuly");
+    }
+
+    public function byLga(Request $request, $id)
+    {
+        $lga = LocalGovernment::findOrFail($id);
+
+        if (!$lga) {
+            return respondWithTransformer([], true, 404, [], "Local Government Not Found");
+        }
+
+        $units = PollingUnit::where('local_government_id', $id)->get();
+
+        if ($units->isEmpty()) {
+            return respondWithTransformer([], true, 404, [], "units Not Found");
+        }
+        
+        // $data = $this->lgasResponse($units);
+        return respondWithTransformer($units, true, 200, [], "Fetched lga's polling units successfuly");
+    }
+
+    public function byWard(Request $request, $id)
+    {
+        $ward = Ward::findOrFail($id);
+
+        if (!$ward) {
+            return respondWithTransformer([], true, 404, [], "Ward Not Found");
+        }
+
+        $units = PollingUnit::where('ward_id', $id)->get();
+
+        if ($units->isEmpty()) {
+            return respondWithTransformer([], true, 404, [], "units Not Found");
+        }
+        
+        // $data = $this->lgasResponse($units);
+        return respondWithTransformer($units, true, 200, [], "Fetched ward's polling units successfuly");
     }
 
     public function add(Request $request)

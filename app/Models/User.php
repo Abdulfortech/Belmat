@@ -28,6 +28,7 @@ class User extends Authenticatable
         'state',
         'lga',
         'address',
+        'voter_number',
         'password',
         'role',
         'picture',

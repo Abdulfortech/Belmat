@@ -22,7 +22,7 @@ use App\Enum\UserRole;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 
-class AuthController extends Controller
+class ProtoTypeController extends Controller
 {
     public function index()
     {
@@ -67,42 +67,42 @@ class AuthController extends Controller
 
     public function signup(Request $request)
     {
+
         $validator = Validator::make($request->all(), [
-            'first_name' => ['required', 'min:4'],
-            'last_name' => ['required', 'min:4'],
+            'firstName' => ['required', 'min:4'],
+            'lastName' => ['required', 'min:4'],
             'gender' => 'nullable|max:15',
             'phone' => 'required|unique:users|min:11|max:15',
             'state' => 'nullable|max:15',
             'lga' => 'nullable|max:15',
-            'address' => 'nullable',
-            // 'role' => 'required|in:Admin,Agent,Supporter|max:15',
-            'polling_unit' => 'nullable',
-            'ward' => 'nullable|max:15',
-            'voter_number' => 'nullable',
+            'address' => 'nullable|max:15',
+            'polling_unit' => 'nullable|max:15',
+            'voter_number' => 'nullable|max:15',
             // 'email' => 'required|email|unique:users',
             // 'password' => 'required|confirmed|min:8',
         ]);
 
+        dd($validator);
+
         if ($validator->fails()) {
             return respondWithTransformer(['errors' => $validator->errors()], false, 400, [], 'Validation error(s)');
         }
-        
     
-        $password = $request->password ?? $request->phone;
         $user = User::create([
-            'firstName' => $request->first_name,
-            'lastName' => $request->last_name,
+            'firstName' => $request->firstName,
+            'lastName' => $request->lastName,
+            'dob' => $request->dob,
             'gender' => $request->gender,
             'state' => $request->state,
             'lga' => $request->lga,
             'address' => $request->address,
             'phone' => $request->phone,
-            'polling_unit_id' => $request->polling_unit,
-            'voter_number' => $request->voter_number,
-            'phone' => $request->phone,
-            'role' => 'Memeber',
+            'email' => $request->email,
+            'role' => $request->role,
             'status' => 'Active',
-            'password' => Hash::make($password),
+            'voter_number' => $request->role,
+            'polling_unit_id' => $request->role,
+            'password' => Hash::make($request->phone),
         ]);
     
         

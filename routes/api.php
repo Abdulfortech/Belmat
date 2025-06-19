@@ -6,6 +6,7 @@ use App\Http\Controllers\API\v1\ElectionController;
 use App\Http\Controllers\API\v1\PartiesController;
 use App\Http\Controllers\API\v1\PollingUnitsController;
 use App\Http\Controllers\API\v1\StatesController;
+use App\Http\Controllers\API\v1\SuggestionController;
 use App\Http\Controllers\API\v1\UserController;
 use App\Http\Controllers\API\v1\WardsController;
 use App\Http\Controllers\API\v1\ZonesController;
@@ -79,6 +80,7 @@ Route::group(['prefix' => 'v1'], function ()
     {
         Route::get('/', [PollingUnitsController::class, 'index']);
         Route::get('/{id}', [PollingUnitsController::class, 'view']);
+        Route::get('/ward/{ward}', [PollingUnitsController::class, 'byWard']);
         Route::post('/add', [PollingUnitsController::class, 'add']);
         Route::put('/edit/{id}', [PollingUnitsController::class, 'edit']);
         Route::get('/activate/{id}', [PollingUnitsController::class, 'activate']);
@@ -110,5 +112,16 @@ Route::group(['prefix' => 'v1'], function ()
     Route::group(['prefix' => 'political-zones'], function () 
     {
         Route::get('/', [ZonesController::class, 'politicalZones']);
+    });
+
+    Route::group(['prefix' => 'suggestions'], function () 
+    {
+        Route::get('/', [SuggestionController::class, 'index']);
+        Route::get('/{id}', [SuggestionController::class, 'view']);
+        Route::post('/add', [SuggestionController::class, 'add']);
+        Route::put('/edit/{id}', [SuggestionController::class, 'edit']);
+        Route::get('/activate/{id}', [SuggestionController::class, 'activate']);
+        Route::get('/deactivate/{id}', [SuggestionController::class, 'deactivate']);
+        Route::delete('/delete/{id}', [SuggestionController::class, 'delete']);
     });
 });
