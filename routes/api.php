@@ -5,6 +5,7 @@ use App\Http\Controllers\API\v1\AuthController;
 use App\Http\Controllers\API\v1\ElectionController;
 use App\Http\Controllers\API\v1\PartiesController;
 use App\Http\Controllers\API\v1\PollingUnitsController;
+use App\Http\Controllers\API\v1\ResultController;
 use App\Http\Controllers\API\v1\StatesController;
 use App\Http\Controllers\API\v1\SuggestionController;
 use App\Http\Controllers\API\v1\UserController;
@@ -123,5 +124,13 @@ Route::group(['prefix' => 'v1'], function ()
         Route::get('/activate/{id}', [SuggestionController::class, 'activate']);
         Route::get('/deactivate/{id}', [SuggestionController::class, 'deactivate']);
         Route::delete('/delete/{id}', [SuggestionController::class, 'delete']);
+    });
+
+
+    Route::group(['prefix' => 'results'], function () 
+    {
+        Route::get('/', [ResultController::class, 'index']);
+        Route::get('/{id}', [ResultController::class, 'view']);
+        Route::post('/add', [ResultController::class, 'add']);
     });
 });

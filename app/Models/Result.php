@@ -10,6 +10,7 @@ class Result extends Model
         'title',
         'agent_name',
         'agent_phone',
+        'votes',
         'media',
         'status',
         'user_id',

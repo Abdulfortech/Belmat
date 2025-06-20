@@ -21,5 +21,6 @@ class DatabaseSeeder extends Seeder
         $this->call(SenatorialZonesSeeder::class);
         $this->call(PoliticalZonesSeeder::class);
         $this->call(PollingUnitsSeeder::class);
+        $this->call(ElectionSeeder::class);
     }
 }

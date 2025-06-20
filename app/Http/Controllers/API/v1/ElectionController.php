@@ -13,7 +13,7 @@ class ElectionController extends Controller
 {
     public function index()
     {
-        $elections = Election::all();
+        $elections = Election::whereNotNull('status')->latest()->get();
         return respondWithTransformer($elections, true, 200, [], "All elections fetched successfully");
     }
 
